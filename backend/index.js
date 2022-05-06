@@ -11,9 +11,10 @@ const options = {
 const server = require('https').createServer(options, app);
 
 const io = require('socket.io')(server, {
+    rejectUnauthorized: false,
     cors: {
         origin: '*',
-        methods:['GET','POST']
+        methods: ['GET', 'POST', 'OPTION']
     }
 })
 
@@ -32,14 +33,14 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
         socket.broadcast.emit('callEnded')
     })
-    
-    socket.on('call', ({ caller, callee, signal }) => {
-        io.to(callee).emit('call',{signal,caller})
+
+    socket.on('call', ({caller, callee, signal}) => {
+        io.to(callee).emit('call', {signal, caller})
     })
 
-    socket.on('answer', ({caller,signal}) => {
-        io.to(caller).emit('accepted',signal)
+    socket.on('answer', ({caller, signal}) => {
+        io.to(caller).emit('accepted', signal)
     })
 })
 
-server.listen(PORT,()=>console.log(`server is runing on ${PORT}`))
+server.listen(PORT, () => console.log(`server is runing on ${PORT}`))
