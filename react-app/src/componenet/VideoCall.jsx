@@ -5,7 +5,7 @@ import io from 'socket.io-client'
 import Peer from "simple-peer"
 
 
-const socket = io.connect('http://localhost:8000')
+const socket = io.connect('https://localhost:8000')
 
 export default function VideoCall() {
     const myVideo = useRef()
