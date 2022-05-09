@@ -15,7 +15,7 @@ import Peer from "simple-peer"
 // });
 //
 
-const manager = new Manager('https://10.0.0.45:8000', {rejectUnauthorized: false, transports: ["websocket"]})
+const manager = new Manager('https://video-app-react-be.herokuapp.com', {rejectUnauthorized: false, transports: ["websocket"]})
 const socket = manager.socket('/')
 
 manager.on('error', (error) => {
