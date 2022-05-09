@@ -15,7 +15,10 @@ import Peer from "simple-peer"
 // });
 //
 
-const manager = new Manager('https://video-app-react-be.herokuapp.com', {rejectUnauthorized: false, transports: ["websocket"]})
+const manager = new Manager('https://video-app-react-be.herokuapp.com', {
+    rejectUnauthorized: false,
+    transports: ["websocket"]
+})
 const socket = manager.socket('/')
 
 manager.on('error', (error) => {
@@ -30,7 +33,7 @@ socket.on('connect_error', (error) => {
 
 export default function VideoCall() {
     const myVideo = useRef()
-    const calleeVideo = useRef()
+    const oppositeVideo = useRef()
     const connectionRef = useRef()
 
     const [stream, setStream] = useState(null)
@@ -71,16 +74,18 @@ export default function VideoCall() {
             socket.emit('call', {caller: me, callee: id, signal})
         })
         peer.on('stream', stream => {
-            calleeVideo.current.srcObject = stream
+            oppositeVideo.current.srcObject = stream
         })
         socket.on('accepted', signal => {
             peer.signal(signal)
         })
         connectionRef.current = peer
     }
+
     const callClickHandler = () => {
         callUser(callee)
     }
+
     const answerClickHandler = () => {
         const peer = new Peer({
             initiator: false,
@@ -91,7 +96,7 @@ export default function VideoCall() {
             socket.emit('answer', {signal, caller})
         })
         peer.on('stream', stream => {
-            calleeVideo.current.srcObject = stream
+            oppositeVideo.current.srcObject = stream
         })
         peer.signal(callerSignal)
         connectionRef.current = peer
@@ -115,8 +120,8 @@ export default function VideoCall() {
             </div>
             <hr/>
             <div>
-                <h3>Callee's video</h3>
-                <video playsInline autoPlay ref={calleeVideo}></video>
+                <h3>Opposite's video</h3>
+                <video playsInline autoPlay ref={oppositeVideo}></video>
             </div>
         </div>
     )
